@@ -52,6 +52,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
 void Game::PlaceFood() {
   int x, y;
+
   while (true) {
     x = random_w(engine);
     y = random_h(engine);
