@@ -4,6 +4,7 @@
 #include "renderer.h"
 
 int main() {
+  // TODO fetch this from a file
   constexpr std::size_t kFramesPerSecond{60};
   constexpr std::size_t kMsPerFrame{1000 / kFramesPerSecond};
   constexpr std::size_t kScreenWidth{640};
@@ -14,8 +15,9 @@ int main() {
   Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
   Controller controller;
   
-  Game game(kGridWidth, kGridHeight);
-  game.Run(controller, renderer, kMsPerFrame);
+  Game game(std::move(controller), std::move(renderer), kGridWidth, kGridHeight, 2);
+  //Game game(controller, renderer, kGridWidth, kGridHeight, 1);
+  game.Run(kMsPerFrame);
   
   std::cout << "Game has terminated successfully!!\n";
   std::cout << "Score: " << game.GetScore() << "\n";

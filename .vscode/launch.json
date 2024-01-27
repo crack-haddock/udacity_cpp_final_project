@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/SnakeGame",
             "args": [],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
             "environment": [],
             "externalConsole": false,

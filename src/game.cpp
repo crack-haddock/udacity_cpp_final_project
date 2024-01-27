@@ -1,17 +1,39 @@
 #include "game.h"
 #include <iostream>
 #include "SDL.h"
-
-Game::Game(std::size_t grid_width, std::size_t grid_height)
-    : snake(grid_width, grid_height),
+/*
+Game::Game(Controller &controller, Renderer &renderer,
+            std::size_t grid_width, std::size_t grid_height, int players=1)
+    : controller(controller),
+      renderer(renderer),
+      numPlayers(players),
       engine(dev()),
       random_w(0, static_cast<int>(grid_width - 1)),
       random_h(0, static_cast<int>(grid_height - 1)) {
   PlaceFood();
+
+  for(size_t i = 0; i < numPlayers; i++) {
+    snakes.emplace_back(std::make_unique<Snake>(grid_width, grid_height, random_w(engine), random_h(engine)));
+  }
+}*/
+
+Game::Game(Controller&& controller, Renderer&& renderer,
+            std::size_t grid_width, std::size_t grid_height, int players=1)
+    : controller(std::move(controller)),
+      renderer(std::move(renderer)),
+      numPlayers(players),
+      engine(dev()),
+      random_w(0, static_cast<int>(grid_width - 1)),
+      random_h(0, static_cast<int>(grid_height - 1)) {
+  PlaceFood();
+
+  for(size_t i = 0; i < numPlayers; i++) {
+    snakes.emplace_back(std::make_unique<Snake>(grid_width, grid_height, random_w(engine), random_h(engine)));
+  }
 }
 
-void Game::Run(Controller const &controller, Renderer &renderer,
-               std::size_t target_frame_duration) {
+//void Game::Run(Controller const &controller, Renderer &renderer,
+void Game::Run(std::size_t target_frame_duration) {
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
   Uint32 frame_end;
@@ -23,14 +45,25 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake);
-    Update();
-    renderer.Render(snake, food);
+    for(auto& s: snakes) {
+      controller.HandleInput(running, *s);
+    }
+
+    for(auto& s: snakes) {
+      Update(*s);
+    }
+
+    renderer.RenderStart();
+
+    for(size_t i = 0; i < numPlayers; i++) {
+      renderer.Render(*(snakes[i].get()), food);
+    }
+
+    renderer.RenderEnd();
 
     frame_end = SDL_GetTicks();
 
-    // Keep track of how long each loop through the input/update/render cycle
-    // takes.
+    // Keep track of how long each loop through the input/update/render cycle takes.
     frame_count++;
     frame_duration = frame_end - frame_start;
 
@@ -56,17 +89,20 @@ void Game::PlaceFood() {
   while (true) {
     x = random_w(engine);
     y = random_h(engine);
-    // Check that the location is not occupied by a snake item before placing
-    // food.
-    if (!snake.SnakeCell(x, y)) {
+    
+    // Check that the location is not occupied by a snake item before placing food.
+    /*if (!snake.SnakeCell(x, y)) {
       food.x = x;
       food.y = y;
+      
       return;
-    }
+    }*/
+    return;
   }
 }
 
-void Game::Update() {
+void Game::Update(Snake &snake) {
+
   if (!snake.alive) return;
 
   snake.Update();
@@ -85,4 +121,9 @@ void Game::Update() {
 }
 
 int Game::GetScore() const { return score; }
-int Game::GetSize() const { return snake.size; }
+
+int Game::GetSize() const {
+  auto s = snakes[0].get();
+  
+  return s->size;
+}
