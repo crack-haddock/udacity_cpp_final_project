@@ -1,33 +1,33 @@
-Overview
+# Overview
 This is a game of Snake for 1 or 2 players. I kept the core game provided in the final project skeleton repo, but added provision for a 2 player game also.
 
-Installation
+## Installation
 Unchanged from Udacity skeleton. Please see readme.md
 
-Features
-[to finish] 1 or 2 player
-[to do] Reads in config data from file
+## Features
+[To Finish] 1 or 2 player [user prompted on startup]
+[TO FINISH] Reads in config data from file
 
-Rubric Points Addressed
-    - ReadMe addressing rubrics etc [this file]
-    - Compiling and Testing
-        - Builds and runs (using CMake and make)
-    - Loops, functions, I/O
-        - rwerew
-        - [to do] Reads data from a file
-        - user input
-        - data structure and immutable variables
-    - OOP
+## Rubric Points Addressed
+    - [3/3] ReadMe addressing rubrics etc [this file]
+    - [0/1] Compiling and Testing
+        - Builds and runs (using cmake and make) **INSIDE UDACITY WORKSPACE**
+    - [2/2] Loops, functions, I/O
+        - [done] The project demonstrates an understanding of C++ functions and control structures
+        - [done] Reads data from a file
+        - The project accepts user input and processes the input [other than controlling a snake]
+        - data structures and immutable variables
+    - [0/3] OOP
         - rre
         - rre
         - rre
         - rre
         - rre
         - rre
-    - Memory Management
-        - uses move semantics
-        - uses smart pointers
-        - rre
-    - Concurrency
+    - [3/3] Memory Management
+        - [DONE] uses move semantics
+        - [PARTLY DONE] uses smart pointers [TO DO - remove all raw pointers where possible]
+        - [DONE] The project follows the Rule of 5.
+    - [0/2] Concurrency
         - rre
         - rre
