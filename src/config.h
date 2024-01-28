@@ -3,9 +3,9 @@
 
 #include <fstream>
 
-class ConfigSettings {
+struct ConfigSettings {
 public:
-  const std::size_t kFramesPerSecond;
+  const std::size_t kDesiredFPS;
   const std::size_t kMsPerFrame; //{1000 / kFramesPerSecond};
   const std::size_t kScreenWidth;
   const std::size_t kScreenHeight;
@@ -13,7 +13,7 @@ public:
   const std::size_t kGridHeight;
 
   ConfigSettings(const std::size_t kFPS, const std::size_t kScrW, const std::size_t kScrH, const std::size_t kGridW, const std::size_t kGridH) :
-    kFramesPerSecond(kFPS),
+    kDesiredFPS(kFPS),
     kScreenWidth(kScrW),
     kScreenHeight(kScrH),
     kGridWidth(kGridW),

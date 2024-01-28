@@ -11,10 +11,8 @@
 
 class Game {
  public:
-  Game(Controller&& controller, Renderer&& renderer, std::size_t grid_width, std::size_t grid_height, int players);
-  //Game(Controller &controller, Renderer &renderer, std::size_t grid_width, std::size_t grid_height, int players);
-  //void Run(Controller const &controller, Renderer &renderer,
-  void Run(std::size_t target_frame_duration);
+  Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, int players);
+  void Run();
   int GetScore() const;
   int GetSize() const;
 
@@ -23,8 +21,6 @@ class Game {
   Renderer renderer;
 
   std::vector<std::unique_ptr<Snake>> snakes;
-
-  //Snake snake;
   SDL_Point food;
 
   std::random_device dev;
@@ -34,6 +30,8 @@ class Game {
 
   int numPlayers{1};
   int score{0};
+  size_t desiredFPS;
+  size_t targetMSPerFrame;
 
   void PlaceFood();
   void Update(Snake &snake);

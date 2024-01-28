@@ -2,13 +2,11 @@
 #include <iostream>
 #include <string>
 
-Renderer::Renderer(const std::size_t screen_width,
-                   const std::size_t screen_height,
-                   const std::size_t grid_width, const std::size_t grid_height)
-    : screen_width(screen_width),
-      screen_height(screen_height),
-      grid_width(grid_width),
-      grid_height(grid_height) {
+Renderer::Renderer(const ConfigSettings& cfg) :
+  screen_width(cfg.kScreenWidth),
+  screen_height(cfg.kScreenHeight),
+  grid_width(cfg.kGridWidth),
+  grid_height(cfg.kGridHeight) {
 
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {

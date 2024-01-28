@@ -8,16 +8,16 @@ int main() {
   try {
     auto settings = ConfigParser::ConfigParse();
 
-    // TODO decide whether to inject this into Renderer, leave as is, or even put ConfigSettings as shared ptr so can share here, and with game.
-    Renderer renderer(settings.kScreenWidth, settings.kScreenHeight, settings.kGridWidth, settings.kGridHeight);
+    Renderer renderer(settings);
     Controller controller;
 
     // TODO - ask user for 1 or 2 player game. Here or in game obj?
 
-    Game game(std::move(controller), std::move(renderer), settings.kGridWidth, settings.kGridHeight, 2);
-    game.Run(settings.kMsPerFrame);
+    Game game(std::move(controller), std::move(renderer), settings, 2);
+    game.Run();
     
-    std::cout << "Game has terminated successfully!!\n";
+    std::cout << "Game Over!!\n";
+
     std::cout << "Score: " << game.GetScore() << "\n";
     std::cout << "Size: " << game.GetSize() << "\n";
 

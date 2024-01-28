@@ -5,11 +5,13 @@
 #include <utility>
 #include "SDL.h"
 #include "snake.h"
+#include "config.h"
 
 class Renderer {
  public:
-  Renderer(const std::size_t screen_width, const std::size_t screen_height,
-           const std::size_t grid_width, const std::size_t grid_height);
+  //Renderer(const std::size_t screen_width, const std::size_t screen_height,
+    //       const std::size_t grid_width, const std::size_t grid_height);
+  Renderer(const ConfigSettings& cfg);
 
   ~Renderer();
 

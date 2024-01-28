@@ -1,39 +1,30 @@
 #include "game.h"
 #include <iostream>
 #include "SDL.h"
-/*
-Game::Game(Controller &controller, Renderer &renderer,
-            std::size_t grid_width, std::size_t grid_height, int players=1)
-    : controller(controller),
-      renderer(renderer),
-      numPlayers(players),
-      engine(dev()),
-      random_w(0, static_cast<int>(grid_width - 1)),
-      random_h(0, static_cast<int>(grid_height - 1)) {
-  PlaceFood();
-
-  for(size_t i = 0; i < numPlayers; i++) {
-    snakes.emplace_back(std::make_unique<Snake>(grid_width, grid_height, random_w(engine), random_h(engine)));
-  }
-}*/
 
 Game::Game(Controller&& controller, Renderer&& renderer,
-            std::size_t grid_width, std::size_t grid_height, int players=1)
-    : controller(std::move(controller)),
-      renderer(std::move(renderer)),
-      numPlayers(players),
-      engine(dev()),
-      random_w(0, static_cast<int>(grid_width - 1)),
-      random_h(0, static_cast<int>(grid_height - 1)) {
-  PlaceFood();
-
+            //std::size_t grid_width, std::size_t grid_height, 
+            ConfigSettings& cfg,
+            int players=1) : 
+  controller(std::move(controller)),
+  renderer(std::move(renderer)),
+  numPlayers(players),
+  desiredFPS(cfg.kDesiredFPS),
+  targetMSPerFrame(cfg.kMsPerFrame),
+  engine(dev()),
+  //random_w(0, static_cast<int>(grid_width - 1)),
+  random_w(0, static_cast<int>(cfg.kGridWidth - 1)),
+  //random_h(0, static_cast<int>(grid_height - 1)) {
+  random_h(0, static_cast<int>(cfg.kGridHeight - 1))
+{
   for(size_t i = 0; i < numPlayers; i++) {
-    snakes.emplace_back(std::make_unique<Snake>(grid_width, grid_height, random_w(engine), random_h(engine)));
+    snakes.emplace_back(std::make_unique<Snake>(cfg.kGridWidth, cfg.kGridHeight, random_w(engine), random_h(engine)));
   }
+
+  PlaceFood();
 }
 
-//void Game::Run(Controller const &controller, Renderer &renderer,
-void Game::Run(std::size_t target_frame_duration) {
+void Game::Run() {
   Uint32 title_timestamp = SDL_GetTicks();
   Uint32 frame_start;
   Uint32 frame_end;
@@ -77,8 +68,8 @@ void Game::Run(std::size_t target_frame_duration) {
     // If the time for this frame is too small (i.e. frame_duration is
     // smaller than the target ms_per_frame), delay the loop to
     // achieve the correct frame rate.
-    if (frame_duration < target_frame_duration) {
-      SDL_Delay(target_frame_duration - frame_duration);
+    if (frame_duration < targetMSPerFrame) {
+      SDL_Delay(targetMSPerFrame - frame_duration);
     }
   }
 }
@@ -91,13 +82,14 @@ void Game::PlaceFood() {
     y = random_h(engine);
     
     // Check that the location is not occupied by a snake item before placing food.
-    /*if (!snake.SnakeCell(x, y)) {
-      food.x = x;
-      food.y = y;
-      
-      return;
-    }*/
-    return;
+    for (auto &s : snakes) {
+      if (!s.get()->SnakeCell(x, y)) {
+        food.x = x;
+        food.y = y;
+
+        return;
+      }
+    }
   }
 }
 

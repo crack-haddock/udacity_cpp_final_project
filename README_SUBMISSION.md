@@ -6,7 +6,7 @@ Unchanged from Udacity skeleton. Please see readme.md
 
 ## Features
 [To Finish] 1 or 2 player [user prompted on startup]
-[TO FINISH] Reads in config data from file
+- Reads in fps and screen/grid dimensions from text file allowing user to set game params without recompiling
 
 ## Rubric Points Addressed
     - [3/3] ReadMe addressing rubrics etc [this file]
@@ -16,15 +16,15 @@ Unchanged from Udacity skeleton. Please see readme.md
         - [done] The project demonstrates an understanding of C++ functions and control structures
         - [done] Reads data from a file
         - The project accepts user input and processes the input [other than controlling a snake]
-        - data structures and immutable variables
-    - [0/3] OOP
+        - [done] data structures and immutable variables
+    - [1/3] OOP
+        - [done] One or more classes are added to the project
         - rre
         - rre
         - rre
         - rre
         - rre
-        - rre
-    - [3/3] Memory Management
+    - [2/3] Memory Management
         - [DONE] uses move semantics
         - [PARTLY DONE] uses smart pointers [TO DO - remove all raw pointers where possible]
         - [DONE] The project follows the Rule of 5.
