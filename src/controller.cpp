@@ -1,40 +1,53 @@
+#include <algorithm>
 #include "controller.h"
-#include <iostream>
-#include "SDL.h"
-#include "snake.h"
 
-void Controller::ChangeDirection(Snake &snake, Snake::Direction input,
-                                 Snake::Direction opposite) const {
-  if (snake.direction != opposite || snake.size == 1) snake.direction = input;
+std::map<int, std::vector<SDL_KeyCode>> Controller::keymaps = {
+    {1, { SDL_KeyCode::SDLK_UP, SDL_KeyCode::SDLK_DOWN, SDL_KeyCode::SDLK_LEFT, SDL_KeyCode::SDLK_RIGHT } },
+    {2, { SDL_KeyCode::SDLK_w, SDL_KeyCode::SDLK_s, SDL_KeyCode::SDLK_a, SDL_KeyCode::SDLK_d } },
+};
+
+void Controller::ChangeDirection(Snake &snake, Direction input, Direction opposite) const {
+  if (snake.direction != opposite || snake.size == 1)
+    snake.direction = input;
+
   return;
 }
 
-void Controller::HandleInput(bool &running, Snake &snake) const {
+void Controller::HandleInput(bool &running, const std::vector<std::unique_ptr<Snake>> &snakes) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
       running = false;
-    } else if (e.type == SDL_KEYDOWN) {
-      switch (e.key.keysym.sym) {
-        case SDLK_UP:
-          ChangeDirection(snake, Snake::Direction::kUp,
-                          Snake::Direction::kDown);
-          break;
+      
+      return;
+    }
 
-        case SDLK_DOWN:
-          ChangeDirection(snake, Snake::Direction::kDown,
-                          Snake::Direction::kUp);
-          break;
+    if (e.type == SDL_KEYDOWN) {
+      for (auto &snake : snakes) {
+        auto &s = *snake;
+        auto it = std::find(keymaps[s.GetId()].begin(), keymaps[s.GetId()].end(), e.key.keysym.sym);
+        if (it == keymaps[s.GetId()].end()) { continue; }
 
-        case SDLK_LEFT:
-          ChangeDirection(snake, Snake::Direction::kLeft,
-                          Snake::Direction::kRight);
-          break;
-
-        case SDLK_RIGHT:
-          ChangeDirection(snake, Snake::Direction::kRight,
-                          Snake::Direction::kLeft);
-          break;
+        switch (e.key.keysym.sym) {
+          case SDLK_UP:
+          case SDLK_w:
+            ChangeDirection(s, Direction::kUp, Direction::kDown);
+            break;
+          case SDLK_DOWN:
+          case SDLK_s:
+            ChangeDirection(s, Direction::kDown, Direction::kUp);
+            break;
+          case SDLK_LEFT:
+          case SDLK_a:
+            ChangeDirection(s, Direction::kLeft, Direction::kRight);
+            break;
+          case SDLK_RIGHT:
+          case SDLK_d:
+            ChangeDirection(s, Direction::kRight, Direction::kLeft);
+            break;
+          default:
+            break;
+        }
       }
     }
   }

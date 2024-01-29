@@ -9,11 +9,10 @@ int main() {
     auto settings = ConfigParser::ConfigParse();
 
     Renderer renderer(settings);
-    Controller controller;
 
     // TODO - ask user for 1 or 2 player game. Here or in game obj?
 
-    Game game(std::move(controller), std::move(renderer), settings, 2);
+    Game game(std::move(renderer), settings, 2);
     game.Run();
     
     std::cout << "Game Over!!\n";

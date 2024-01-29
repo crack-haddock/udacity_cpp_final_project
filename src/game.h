@@ -2,16 +2,16 @@
 #define GAME_H
 
 #include <random>
+#include <memory>
+#include <vector>
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
 #include "snake.h"
-#include <memory>
-#include <vector>
 
 class Game {
  public:
-  Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, int players);
+  Game(Renderer&& renderer, ConfigSettings& cfg, int players);
   void Run();
   int GetScore() const;
   int GetSize() const;

@@ -2,19 +2,14 @@
 #include <iostream>
 #include "SDL.h"
 
-Game::Game(Controller&& controller, Renderer&& renderer,
-            //std::size_t grid_width, std::size_t grid_height, 
-            ConfigSettings& cfg,
-            int players=1) : 
-  controller(std::move(controller)),
+Game::Game(/*Controller&& controller,*/ Renderer&& renderer, ConfigSettings& cfg, int players=1) : 
+  //controller(std::move(controller)),
   renderer(std::move(renderer)),
   numPlayers(players),
   desiredFPS(cfg.kDesiredFPS),
   targetMSPerFrame(cfg.kMsPerFrame),
   engine(dev()),
-  //random_w(0, static_cast<int>(grid_width - 1)),
   random_w(0, static_cast<int>(cfg.kGridWidth - 1)),
-  //random_h(0, static_cast<int>(grid_height - 1)) {
   random_h(0, static_cast<int>(cfg.kGridHeight - 1))
 {
   for(size_t i = 0; i < numPlayers; i++) {
@@ -36,9 +31,7 @@ void Game::Run() {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    for(auto& s: snakes) {
-      controller.HandleInput(running, *s);
-    }
+    controller.HandleInput(running, snakes);
 
     for(auto& s: snakes) {
       Update(*s);
@@ -65,9 +58,8 @@ void Game::Run() {
       title_timestamp = frame_end;
     }
 
-    // If the time for this frame is too small (i.e. frame_duration is
-    // smaller than the target ms_per_frame), delay the loop to
-    // achieve the correct frame rate.
+    // If the time for this frame is too small (i.e. frame_duration is smaller than the 
+    // target ms_per_frame), delay the loop to achieve the correct frame rate.
     if (frame_duration < targetMSPerFrame) {
       SDL_Delay(targetMSPerFrame - frame_duration);
     }
@@ -94,7 +86,6 @@ void Game::PlaceFood() {
 }
 
 void Game::Update(Snake &snake) {
-
   if (!snake.alive) return;
 
   snake.Update();
@@ -105,17 +96,17 @@ void Game::Update(Snake &snake) {
   // Check if there's food over here
   if (food.x == new_x && food.y == new_y) {
     score++;
+
     PlaceFood();
+
     // Grow snake and increase speed.
     snake.GrowBody();
     snake.speed += 0.02;
   }
 }
 
+// TODO make this work for 2+ snakes or replace with sommat that can
 int Game::GetScore() const { return score; }
 
-int Game::GetSize() const {
-  auto s = snakes[0].get();
-  
-  return s->size;
-}
+// TODO make this work for 2+ snakes or replace with sommat that can
+int Game::GetSize() const { return snakes[0].get()->size; }

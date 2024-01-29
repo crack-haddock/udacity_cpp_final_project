@@ -3,11 +3,10 @@
 
 #include <vector>
 #include "SDL.h"
+#include "direction.h"
 
 class Snake {
  public:
-  enum class Direction { kUp, kDown, kLeft, kRight };
-
   Snake(int grid_width, int grid_height, int x, int y)
       : grid_width(grid_width),
         grid_height(grid_height),
@@ -36,6 +35,7 @@ class Snake {
   float head_x;
   float head_y;
   std::vector<SDL_Point> body;
+  int GetId() { return id; }
 
  private:
   void UpdateHead();

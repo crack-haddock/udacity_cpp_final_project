@@ -1,11 +1,11 @@
 # Overview
-This is a game of Snake for 1 or 2 players. I kept the core game provided in the final project skeleton repo, but added provision for a 2 player game also.
+This is a game of Snake for 1 or 2 players. I extended the core game provided in the final project skeleton repo.
 
 ## Installation
 Unchanged from Udacity skeleton. Please see readme.md
 
 ## Features
-[To Finish] 1 or 2 player [user prompted on startup]
+[TODO Finish] - 1 or 2 player [TODO user prompted on startup]
 - Reads in fps and screen/grid dimensions from text file allowing user to set game params without recompiling
 
 ## Rubric Points Addressed
@@ -17,17 +17,20 @@ Unchanged from Udacity skeleton. Please see readme.md
         - [done] Reads data from a file
         - The project accepts user input and processes the input [other than controlling a snake]
         - [done] data structures and immutable variables
-    - [1/3] OOP
+    - [2/3] OOP
         - [done] One or more classes are added to the project
+        - [done] Class constructors utilize member initialization lists.
         - rre
         - rre
         - rre
         - rre
-        - rre
-    - [2/3] Memory Management
+    - [3/3] Memory Management
         - [DONE] uses move semantics
         - [PARTLY DONE] uses smart pointers [TO DO - remove all raw pointers where possible]
         - [DONE] The project follows the Rule of 5.
+        - [DONE] The project makes use of references in function declarations.
     - [0/2] Concurrency
-        - rre
-        - rre
+        - The project uses multithreading
+        - A promise and future is used in the project
+        - A mutex or lock is used in the project
+        - A condition variable is used in the project

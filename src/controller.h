@@ -1,11 +1,18 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <map>
+#include <vector>
+#include <memory>
+#include "SDL.h"
 #include "snake.h"
+#include "direction.h"
 
 class Controller {
  public:
-    Controller() {}
+    Controller() {
+      
+    }
 
     ~Controller() {}
 
@@ -32,11 +39,12 @@ class Controller {
       return *this;
     }
 
-    void HandleInput(bool &running, Snake &snake) const;
+    void HandleInput(bool &running, const std::vector<std::unique_ptr<Snake>> &snakes) const;
 
  private:
-    void ChangeDirection(Snake &snake, Snake::Direction input,
-                            Snake::Direction opposite) const;
+    void ChangeDirection(Snake &snake, Direction input, Direction opposite) const;
+
+    static std::map<int, std::vector<SDL_KeyCode>> keymaps;
 };
 
 #endif
