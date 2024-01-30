@@ -1,19 +1,23 @@
-#include "game.h"
 #include <iostream>
+#include "game.h"
 #include "SDL.h"
 
-Game::Game(/*Controller&& controller,*/ Renderer&& renderer, ConfigSettings& cfg, int players=1) : 
-  //controller(std::move(controller)),
+Game::Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, int players=1) : 
+  controller(std::move(controller)),
   renderer(std::move(renderer)),
   numPlayers(players),
   desiredFPS(cfg.kDesiredFPS),
   targetMSPerFrame(cfg.kMsPerFrame),
-  engine(dev()),
-  random_w(0, static_cast<int>(cfg.kGridWidth - 1)),
-  random_h(0, static_cast<int>(cfg.kGridHeight - 1))
+  rndEngn(rndDev()),
+  rand_w(0, static_cast<int>(cfg.kGridWidth - 1)),
+  rand_h(0, static_cast<int>(cfg.kGridHeight - 1)),
+  rand_dir(0, static_cast<int>(0, 3))
 {
   for(size_t i = 0; i < numPlayers; i++) {
-    snakes.emplace_back(std::make_unique<Snake>(cfg.kGridWidth, cfg.kGridHeight, random_w(engine), random_h(engine)));
+    snakes.emplace_back(std::make_unique<Snake>
+      (cfg.kGridWidth, cfg.kGridHeight, rand_w(rndEngn), rand_h(rndEngn), 
+        static_cast<Direction>(rand_dir(rndEngn)) )
+    );
   }
 
   PlaceFood();
@@ -26,6 +30,7 @@ void Game::Run() {
   Uint32 frame_duration;
   int frame_count = 0;
   bool running = true;
+  int scores[] = {0, 0, 0};
 
   while (running) {
     frame_start = SDL_GetTicks();
@@ -35,6 +40,10 @@ void Game::Run() {
 
     for(auto& s: snakes) {
       Update(*s);
+    }
+
+    for(size_t i = 0; i < numPlayers; i++) {
+      scores[i] = GetScore(i);
     }
 
     renderer.RenderStart();
@@ -51,9 +60,9 @@ void Game::Run() {
     frame_count++;
     frame_duration = frame_end - frame_start;
 
-    // After every second, update the window title.
+    // After every frame, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer.UpdateWindowTitle(score, frame_count);
+      renderer.UpdateWindowTitle(scores, numPlayers, frame_count);
       frame_count = 0;
       title_timestamp = frame_end;
     }
@@ -64,14 +73,22 @@ void Game::Run() {
       SDL_Delay(targetMSPerFrame - frame_duration);
     }
   }
+
+  // TODO ideally write this to screen with SDL (just need more time...)
+  std::cout << "Game Over!!\n";
+
+  for(size_t i = 0; i < numPlayers; i++) {
+    std::cout << "PL" << i+1 << ": " << GetScore(i) << "\n";
+    std::cout << "Size: " << GetSize(i) << "\n";
+  }
 }
 
 void Game::PlaceFood() {
   int x, y;
 
   while (true) {
-    x = random_w(engine);
-    y = random_h(engine);
+    x = rand_w(rndEngn);
+    y = rand_h(rndEngn);
     
     // Check that the location is not occupied by a snake item before placing food.
     for (auto &s : snakes) {
@@ -95,7 +112,7 @@ void Game::Update(Snake &snake) {
 
   // Check if there's food over here
   if (food.x == new_x && food.y == new_y) {
-    score++;
+    snake.AddOrSubScore(1);
 
     PlaceFood();
 
@@ -105,8 +122,6 @@ void Game::Update(Snake &snake) {
   }
 }
 
-// TODO make this work for 2+ snakes or replace with sommat that can
-int Game::GetScore() const { return score; }
+int Game::GetScore(int idx) const { return snakes[idx].get()->GetScore(); }
 
-// TODO make this work for 2+ snakes or replace with sommat that can
-int Game::GetSize() const { return snakes[0].get()->size; }
+int Game::GetSize(int idx) const { return snakes[idx].get()->size; }

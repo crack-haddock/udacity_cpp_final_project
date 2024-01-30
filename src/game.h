@@ -11,10 +11,10 @@
 
 class Game {
  public:
-  Game(Renderer&& renderer, ConfigSettings& cfg, int players);
+  Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, int players);
   void Run();
-  int GetScore() const;
-  int GetSize() const;
+  int GetScore(int idx) const;
+  int GetSize(int idx) const;
 
  private:
   Controller controller;
@@ -23,13 +23,13 @@ class Game {
   std::vector<std::unique_ptr<Snake>> snakes;
   SDL_Point food;
 
-  std::random_device dev;
-  std::mt19937 engine;
-  std::uniform_int_distribution<int> random_w;
-  std::uniform_int_distribution<int> random_h;
+  std::random_device rndDev;
+  std::mt19937 rndEngn;
+  std::uniform_int_distribution<int> rand_w;
+  std::uniform_int_distribution<int> rand_h;
+  std::uniform_int_distribution<int> rand_dir;
 
   int numPlayers{1};
-  int score{0};
   size_t desiredFPS;
   size_t targetMSPerFrame;
 

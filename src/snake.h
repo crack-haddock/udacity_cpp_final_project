@@ -7,35 +7,34 @@
 
 class Snake {
  public:
-  Snake(int grid_width, int grid_height, int x, int y)
+  Snake(int grid_width, int grid_height, int x, int y, Direction dir)
       : grid_width(grid_width),
         grid_height(grid_height),
-        //head_x(grid_width / 2),
         head_x(x),
-        //head_y(grid_height / 2) 
-        head_y(y)
-        {
-          id = ++Snake::count;
-        }
+        head_y(y),
+        direction(dir)
+      {
+        id = ++Snake::count;
+      }
 
   ~Snake() {
 
   }
 
+  int GetId() const { return id; }
   void Update();
-
   void GrowBody();
   bool SnakeCell(int x, int y);
+  int GetScore() { return score; }
+  void AddOrSubScore(int _score=1) { score += _score; }
 
-  Direction direction = Direction::kUp;
-
+  Direction direction;
   float speed{0.1f};
   int size{1};
   bool alive{true};
   float head_x;
   float head_y;
   std::vector<SDL_Point> body;
-  int GetId() { return id; }
 
  private:
   void UpdateHead();
@@ -47,6 +46,8 @@ class Snake {
 
   static int count;
   int id;
+  
+  int score{0};
 };
 
 #endif

@@ -5,7 +5,7 @@ This is a game of Snake for 1 or 2 players. I extended the core game provided in
 Unchanged from Udacity skeleton. Please see readme.md
 
 ## Features
-[TODO Finish] - 1 or 2 player [TODO user prompted on startup]
+- 1,2 or 3 player [TODO user prompted for number on startup]
 - Reads in fps and screen/grid dimensions from text file allowing user to set game params without recompiling
 
 ## Rubric Points Addressed

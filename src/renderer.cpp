@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include <iostream>
+#include <sstream>
 #include <string>
 
 Renderer::Renderer(const ConfigSettings& cfg) :
@@ -67,18 +68,31 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
     SDL_RenderFillRect(sdl_renderer, &block);
   }
 
-  // Render snake's head
+  // Render snake's head [TODO - diff colour per player]
   block.x = static_cast<int>(snake.head_x) * block.w;
   block.y = static_cast<int>(snake.head_y) * block.h;
   if (snake.alive) {
-    SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x7A, 0xCC, 0xFF);
-  } else {
+    if (snake.GetId() == 1)
+      SDL_SetRenderDrawColor(sdl_renderer, 0x00, 0x7A, 0xCC, 0xFF);
+    else if (snake.GetId() == 2)
+      SDL_SetRenderDrawColor(sdl_renderer, 0x7F, 0x7A & 0x3A, 0xCC & 0x97, 0xFF);
+    else
+      SDL_SetRenderDrawColor(sdl_renderer, 0xCF, 0x7A & 0x9A, 0xCC & 0x37, 0xFF);
+  }
+  else {
     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
   }
   SDL_RenderFillRect(sdl_renderer, &block);
 }
 
-void Renderer::UpdateWindowTitle(int score, int fps) {
-  std::string title{"Snake Score: " + std::to_string(score) + " FPS: " + std::to_string(fps)};
-  SDL_SetWindowTitle(sdl_window, title.c_str());
+void Renderer::UpdateWindowTitle(int const scores[], int numPlayers, int fps) const {
+  std::stringstream ss;
+
+  for (int i=0; i < numPlayers; i++) {
+    ss << "PL" << i+1 << ": " << scores[i] << "  ";
+  }
+
+  ss << "FPS: " << std::to_string(fps);
+
+  SDL_SetWindowTitle(sdl_window, ss.str().c_str());
 }
