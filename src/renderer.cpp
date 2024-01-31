@@ -35,6 +35,25 @@ Renderer::Renderer(const ConfigSettings& cfg) :
 
     throw std::runtime_error("Error creating SDL rendered. Error: " + std::string(SDL_GetError()));
   }
+
+  if (TTF_Init() != 0) {
+    SDL_DestroyWindow(sdl_window);
+    SDL_Quit();
+
+    throw std::runtime_error("Error creating TTF. Error: " + std::string(TTF_GetError()));
+  }
+
+  font_18 = TTF_OpenFont("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf", 18);
+  if (!font_18) {
+      //std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;
+      throw std::runtime_error("Error loading TTF font 18. Error: " + std::string(TTF_GetError()));
+  }
+
+  font_30 = TTF_OpenFont("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf", 30);
+  if (!font_30) {
+      //std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;
+      throw std::runtime_error("Error loading TTF font 30. Error: " + std::string(TTF_GetError()));
+  }
 }
 
 Renderer::~Renderer() {
@@ -72,7 +91,7 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
     SDL_RenderFillRect(sdl_renderer, &block);
   }
 
-  // Render snake's head [TODO - diff colour per player]
+  // Render snake's head
   block.x = static_cast<int>(snake.head_x) * block.w;
   block.y = static_cast<int>(snake.head_y) * block.h;
   if (snake.alive) {
@@ -87,6 +106,23 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
     SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
   }
   SDL_RenderFillRect(sdl_renderer, &block);
+}
+
+void Renderer::RenderGameOver(std::string text) {
+    TTF_Font *font = font_30;
+    SDL_Color textColor = { 255, 0, 0, 255 };
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), textColor);
+    SDL_Texture* sdlText = SDL_CreateTextureFromSurface(sdl_renderer, textSurface);
+    int text_width = textSurface->w;
+    int text_height = textSurface->h;
+    SDL_FreeSurface(textSurface);
+
+    int x_offset = (static_cast<int>(screen_width)/2) - (text_width/2);
+    int y_offset = (static_cast<int>(screen_height)/2) - (text_height/2);
+    SDL_Rect renderQuad = { x_offset, y_offset, text_width, text_height };
+    SDL_RenderCopy(sdl_renderer, sdlText, NULL, &renderQuad);
+    SDL_DestroyTexture(sdlText);
+    SDL_RenderPresent(sdl_renderer); // Update the screen to make text visible.
 }
 
 void Renderer::UpdateWindowTitle(int const scores[], int numPlayers, int fps) const {

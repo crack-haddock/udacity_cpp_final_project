@@ -11,7 +11,8 @@ Game::Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, in
   rndEngn(rndDev()),
   rand_w(0, static_cast<int>(cfg.kGridWidth - 1)),
   rand_h(0, static_cast<int>(cfg.kGridHeight - 1)),
-  rand_dir(0, static_cast<int>(0, 3))
+  rand_dir(0, static_cast<int>(0, 3)),
+  scores{0, 0, 0}
 {
   for(size_t i = 0; i < numPlayers; i++) {
     snakes.emplace_back(std::make_unique<Snake>
@@ -30,7 +31,6 @@ void Game::Run() {
   Uint32 frame_duration;
   int frame_count = 0;
   bool running = true;
-  int scores[] = {0, 0, 0};
 
   while (running) {
     frame_start = SDL_GetTicks();
@@ -73,9 +73,21 @@ void Game::Run() {
       SDL_Delay(targetMSPerFrame - frame_duration);
     }
   }
+}
 
-  // TODO ideally write this to screen with SDL (just need more time...)
+void Game::GameEnded() {
   std::cout << "Game Over!!\n";
+  renderer.RenderGameOver("GAME OVER!!");
+
+  SDL_Event event;
+  bool quit = false;
+  while (!quit) {
+      while (SDL_PollEvent(&event)) {
+          if (event.type == SDL_QUIT || event.type == SDL_KEYDOWN) {
+              quit = true;
+          }
+      }
+  }
 
   for(size_t i = 0; i < numPlayers; i++) {
     std::cout << "PL" << i+1 << ": " << GetScore(i) << "\n";

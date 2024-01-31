@@ -9,10 +9,13 @@
 #include "renderer.h"
 #include "snake.h"
 
+constexpr int MAX_PLAYERS{3};
+
 class Game {
  public:
   Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, int players);
   void Run();
+  void GameEnded();
   int GetScore(int idx) const;
   int GetSize(int idx) const;
 
@@ -29,9 +32,10 @@ class Game {
   std::uniform_int_distribution<int> rand_h;
   std::uniform_int_distribution<int> rand_dir;
 
-  int numPlayers{1};
+  int numPlayers{MAX_PLAYERS};
   size_t desiredFPS;
   size_t targetMSPerFrame;
+  int scores[MAX_PLAYERS];
 
   void PlaceFood();
   void Update(Snake &snake);

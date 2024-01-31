@@ -14,6 +14,7 @@ int main() {
 
     Game game(std::move(controller), std::move(renderer), settings, 3);
     game.Run();
+    game.GameEnded();
 
     return 0;
   }

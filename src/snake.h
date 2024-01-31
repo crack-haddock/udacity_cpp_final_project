@@ -3,17 +3,18 @@
 
 #include <vector>
 #include "SDL.h"
-#include "direction.h"
+#include "gameObject.h"
 
-class Snake {
+class Snake : public GameObject {
  public:
   Snake(int grid_width, int grid_height, int x, int y, Direction dir)
-      : grid_width(grid_width),
+      : GameObject(),
+        grid_width(grid_width),
         grid_height(grid_height),
         head_x(x),
-        head_y(y),
-        direction(dir)
+        head_y(y)
       {
+        direction = dir;
         id = ++Snake::count;
       }
 
@@ -28,7 +29,7 @@ class Snake {
   int GetScore() { return score; }
   void AddOrSubScore(int _score=1) { score += _score; }
 
-  Direction direction;
+  //Direction direction;
   float speed{0.1f};
   int size{1};
   bool alive{true};
