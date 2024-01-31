@@ -1,5 +1,6 @@
 # Overview
-This is a game of Snake for 1 or 2 players. I extended the core game provided in the final project skeleton repo.
+This is a game of Snake for 1, 2 or 3 players. I extended the core game provided in the final project skeleton repo.
+There are a few things not implemented from the point of view of a Snake game, most notably collision detection between snakes and an AI player. I also wanted food to be a playable object in multiplayer. Did not have time for these and some other stuff, but as the point of this exercise is to satisfy the rubrics below, I've concentrated on those.
 
 ## Installation
 Unchanged from Udacity skeleton. Please see readme.md
@@ -17,12 +18,12 @@ Unchanged from Udacity skeleton. Please see readme.md
         - [done] Reads data from a file
         - [] The project accepts user input and processes the input [other than controlling a snake]
         - [done] data structures and immutable variables
-    - [2/3] OOP
+    - [3/3] OOP
         - [done] One or more classes are added to the project
         - [done] Class constructors utilize member initialization lists.
         - [] Classes abstract implementation details from their interfaces
         - [] Overloaded functions allow the same function to operate on different parameters.
-        - [] Classes follow an appropriate inheritance hierarchy with virtual and override functions
+        - [done] Classes follow an appropriate inheritance hierarchy with virtual and override functions
         - [] Templates generalize functions or classes in the project.
     - [4/3] Memory Management
         - [DONE] uses move semantics

@@ -11,7 +11,7 @@ Game::Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, in
   rndEngn(rndDev()),
   rand_w(0, static_cast<int>(cfg.kGridWidth - 1)),
   rand_h(0, static_cast<int>(cfg.kGridHeight - 1)),
-  rand_dir(0, static_cast<int>(0, 3)),
+  rand_dir(1, 4),
   scores{0, 0, 0}
 {
   for(size_t i = 0; i < numPlayers; i++) {
@@ -31,8 +31,9 @@ void Game::Run() {
   Uint32 frame_duration;
   int frame_count = 0;
   bool running = true;
+  bool winner = false;
 
-  while (running) {
+  while (running && !winner) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
@@ -44,6 +45,10 @@ void Game::Run() {
 
     for(size_t i = 0; i < numPlayers; i++) {
       scores[i] = GetScore(i);
+
+      // make multiplayer first to score 10 (should be configurable really)
+      if (numPlayers > 1 && scores[i] >= 10)
+        winner = true;
     }
 
     renderer.RenderStart();

@@ -8,28 +8,21 @@
 class Snake : public GameObject {
  public:
   Snake(int grid_width, int grid_height, int x, int y, Direction dir)
-      : GameObject(),
+      : GameObject(++Snake::count, dir),
         grid_width(grid_width),
         grid_height(grid_height),
         head_x(x),
         head_y(y)
-      {
-        direction = dir;
-        id = ++Snake::count;
-      }
+      {}
 
-  ~Snake() {
+  ~Snake() {}
 
-  }
-
-  int GetId() const { return id; }
   void Update();
   void GrowBody();
   bool SnakeCell(int x, int y);
-  int GetScore() { return score; }
-  void AddOrSubScore(int _score=1) { score += _score; }
 
-  //Direction direction;
+  int GetObjectCount() { return count; }
+
   float speed{0.1f};
   int size{1};
   bool alive{true};
@@ -46,9 +39,6 @@ class Snake : public GameObject {
   int grid_height;
 
   static int count;
-  int id;
-  
-  int score{0};
 };
 
 #endif
