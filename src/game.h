@@ -23,7 +23,7 @@ class Game {
   Controller controller;
   Renderer renderer;
 
-  std::vector<std::unique_ptr<Snake>> snakes;
+  std::vector<std::shared_ptr<GameObject>> gameObjs;
   SDL_Point food;
 
   std::random_device rndDev;
@@ -36,7 +36,9 @@ class Game {
   size_t desiredFPS;
   size_t targetMSPerFrame;
   int scores[MAX_PLAYERS];
+  int winner{-1};
 
+  // TODO need to stay working much as they are until Food class can be used
   void PlaceFood();
   void Update(Snake &snake);
 };

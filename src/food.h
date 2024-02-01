@@ -12,7 +12,7 @@ public:
 
     void Update() {} // TODO if I ever get around to using this class in anger
     int GetScore() = delete; // won't need this unless class used AND as a playable character
-    int GetObjectCount() { return count; }
+    int GetObjectCount() const { return count; }
 private:
     static int count;
 };

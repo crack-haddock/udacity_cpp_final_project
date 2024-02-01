@@ -7,14 +7,7 @@ std::map<int, std::vector<SDL_KeyCode>> Controller::keymaps = {
     {3, { SDL_KeyCode::SDLK_KP_8, SDL_KeyCode::SDLK_KP_2, SDL_KeyCode::SDLK_KP_4, SDL_KeyCode::SDLK_KP_6 } }
 };
 
-void Controller::ChangeDirection(Snake &snake, Direction input, Direction opposite) const {
-  if (snake.direction != opposite || snake.size == 1)
-    snake.direction = input;
-
-  return;
-}
-
-void Controller::HandleInput(bool &running, const std::vector<std::unique_ptr<Snake>> &snakes) const {
+void Controller::HandleInput(bool &running, const std::vector<std::shared_ptr<GameObject>> &gameObjs) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
@@ -24,8 +17,8 @@ void Controller::HandleInput(bool &running, const std::vector<std::unique_ptr<Sn
     }
 
     if (e.type == SDL_KEYDOWN) {
-      for (auto &snake : snakes) {
-        auto &s = *snake;
+      for (auto &gameObj : gameObjs) {
+        auto &s = *gameObj;
         auto it = std::find(keymaps[s.GetId()].begin(), keymaps[s.GetId()].end(), e.key.keysym.sym);
         if (it == keymaps[s.GetId()].end()) { continue; }
 
@@ -33,22 +26,22 @@ void Controller::HandleInput(bool &running, const std::vector<std::unique_ptr<Sn
           case SDLK_UP:
           case SDLK_w:
           case SDLK_KP_8:
-            ChangeDirection(s, Direction::kUp, Direction::kDown);
+            gameObj->SetDirection(Direction::kUp, Direction::kDown);
             break;
           case SDLK_DOWN:
           case SDLK_s:
           case SDLK_KP_2:
-            ChangeDirection(s, Direction::kDown, Direction::kUp);
+            gameObj->SetDirection(Direction::kDown, Direction::kUp);
             break;
           case SDLK_LEFT:
           case SDLK_a:
           case SDLK_KP_4:
-            ChangeDirection(s, Direction::kLeft, Direction::kRight);
+            gameObj->SetDirection(Direction::kLeft, Direction::kRight);
             break;
           case SDLK_RIGHT:
           case SDLK_d:
           case SDLK_KP_6:
-            ChangeDirection(s, Direction::kRight, Direction::kLeft);
+            gameObj->SetDirection(Direction::kRight, Direction::kLeft);
             break;
           default:
             break;

@@ -5,16 +5,14 @@
 #include <vector>
 #include <memory>
 #include "SDL.h"
-#include "snake.h"
+#include "gameObject.h"
 #include "direction.h"
 
 class Controller {
  public:
-    void HandleInput(bool &running, const std::vector<std::unique_ptr<Snake>> &snakes) const;
+    void HandleInput(bool &running, const std::vector<std::shared_ptr<GameObject>> &gameObjs) const;
 
  private:
-    void ChangeDirection(Snake &snake, Direction input, Direction opposite) const;
-
     static std::map<int, std::vector<SDL_KeyCode>> keymaps;
 };
 

@@ -80,7 +80,7 @@ class Renderer {
   }
 
   void RenderStart();
-  void Render(Snake const snake, SDL_Point const &food);
+  void Render(const Snake& snake, const SDL_Point &food);
   void RenderEnd();
 
   void RenderGameOver(std::string text);

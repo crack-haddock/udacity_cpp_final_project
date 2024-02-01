@@ -11,14 +11,19 @@ public:
         {}
 
     int GetId() const { return id; }
-    int GetScore() { return score; } // will just return zero if below overridden as a no-op
-    // virtual so an object that doesn't need a score can override if need be
+    int GetScore() { return score; } // will just return zero if below overridden as a no-op.
+    // virtual so a class that doesn't need a score can override if need be
     virtual void AddOrSubScore(int _score=1) { score += _score; }
 
     virtual void Update() = 0;
-    virtual int GetObjectCount() = 0;
+    virtual int GetObjectCount() const = 0;
 
-    Direction direction; // TODO should probably be protected but would need getter
+    // expecting the controller class to call this, but child class may redefine 
+    virtual void SetDirection(Direction input, Direction opposite) {
+        direction = input;
+    }
+protected:
+    Direction direction;
 private:
     int id; // NOTE: better as some kind of GUID, but beyond spec for this project
     int score{0};

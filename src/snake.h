@@ -20,8 +20,9 @@ class Snake : public GameObject {
   void Update();
   void GrowBody();
   bool SnakeCell(int x, int y);
-
-  int GetObjectCount() { return count; }
+  void SetDirection(Direction input, Direction opposite) override;
+  
+  int GetObjectCount() const { return count; }
 
   float speed{0.1f};
   int size{1};

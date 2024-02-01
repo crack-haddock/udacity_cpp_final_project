@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "game.h"
 #include "SDL.h"
 
@@ -15,7 +16,7 @@ Game::Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, in
   scores{0, 0, 0}
 {
   for(size_t i = 0; i < numPlayers; i++) {
-    snakes.emplace_back(std::make_unique<Snake>
+    gameObjs.emplace_back(std::make_unique<Snake>
       (cfg.kGridWidth, cfg.kGridHeight, rand_w(rndEngn), rand_h(rndEngn), 
         static_cast<Direction>(rand_dir(rndEngn)) )
     );
@@ -31,30 +32,24 @@ void Game::Run() {
   Uint32 frame_duration;
   int frame_count = 0;
   bool running = true;
-  bool winner = false;
+  bool won = false;
 
-  while (running && !winner) {
+  while (running && !won) {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snakes);
+    controller.HandleInput(running, gameObjs);
 
-    for(auto& s: snakes) {
-      Update(*s);
-    }
-
-    for(size_t i = 0; i < numPlayers; i++) {
-      scores[i] = GetScore(i);
-
-      // make multiplayer first to score 10 (should be configurable really)
-      if (numPlayers > 1 && scores[i] >= 10)
-        winner = true;
+    for (const auto& obj : gameObjs) {
+      if (auto snake = std::dynamic_pointer_cast<Snake>(obj))
+        Update(*snake);
     }
 
     renderer.RenderStart();
 
-    for(size_t i = 0; i < numPlayers; i++) {
-      renderer.Render(*(snakes[i].get()), food);
+    for (const auto& obj : gameObjs) {
+      if (auto snake = std::dynamic_pointer_cast<Snake>(obj))
+        renderer.Render(*snake, food);
     }
 
     renderer.RenderEnd();
@@ -77,12 +72,27 @@ void Game::Run() {
     if (frame_duration < targetMSPerFrame) {
       SDL_Delay(targetMSPerFrame - frame_duration);
     }
+
+    for(size_t i = 0; i < numPlayers; i++) {
+      scores[i] = GetScore(i);
+
+      // make multiplayer first to score 10 (TODO: should be configurable really)
+      if (numPlayers > 1 && scores[i] >= 10) {
+        won = true;
+        winner = i;
+      }
+    }
   }
 }
 
 void Game::GameEnded() {
-  std::cout << "Game Over!!\n";
-  renderer.RenderGameOver("GAME OVER!!");
+  if (winner != -1) {
+    std::stringstream ss;
+    ss << "PLAYER " << (winner + 1) << " WINS!";
+    renderer.RenderGameOver(ss.str().c_str());
+  }
+  else
+    renderer.RenderGameOver("GAME OVER!!");
 
   SDL_Event event;
   bool quit = false;
@@ -108,12 +118,14 @@ void Game::PlaceFood() {
     y = rand_h(rndEngn);
     
     // Check that the location is not occupied by a snake item before placing food.
-    for (auto &s : snakes) {
-      if (!s.get()->SnakeCell(x, y)) {
-        food.x = x;
-        food.y = y;
+    for (auto &g : gameObjs) {
+      if (auto s = std::dynamic_pointer_cast<Snake>(g)) {
+        if (!s.get()->SnakeCell(x, y)) {
+          food.x = x;
+          food.y = y;
 
-        return;
+          return;
+        }
       }
     }
   }
@@ -139,6 +151,11 @@ void Game::Update(Snake &snake) {
   }
 }
 
-int Game::GetScore(int idx) const { return snakes[idx].get()->GetScore(); }
+int Game::GetScore(int idx) const { return gameObjs[idx]->GetScore(); }
 
-int Game::GetSize(int idx) const { return snakes[idx].get()->size; }
+int Game::GetSize(int idx) const { 
+  if (auto snake = std::dynamic_pointer_cast<Snake>(gameObjs[idx]))
+    return snake->size;
+
+  return 0;
+}

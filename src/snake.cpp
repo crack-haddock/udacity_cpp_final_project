@@ -1,6 +1,7 @@
-#include "snake.h"
 #include <cmath>
 #include <iostream>
+#include "snake.h"
+#include "gameObject.h"
 
 int Snake::count = 0;
 
@@ -77,4 +78,10 @@ bool Snake::SnakeCell(int x, int y) {
     }
   }
   return false;
+}
+
+void Snake::SetDirection(Direction input, Direction opposite) {
+    if (direction != opposite || size == 1) {
+        direction = input;
+    }
 }
