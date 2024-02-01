@@ -7,7 +7,7 @@ std::map<int, std::vector<SDL_KeyCode>> Controller::keymaps = {
     {3, { SDL_KeyCode::SDLK_KP_8, SDL_KeyCode::SDLK_KP_2, SDL_KeyCode::SDLK_KP_4, SDL_KeyCode::SDLK_KP_6 } }
 };
 
-void Controller::HandleInput(bool &running, const std::vector<std::shared_ptr<GameObject>> &gameObjs) const {
+void Controller::HandleInput(bool &running, const std::vector<std::reference_wrapper<GameObject>> &gameObjs) const {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {
@@ -18,30 +18,30 @@ void Controller::HandleInput(bool &running, const std::vector<std::shared_ptr<Ga
 
     if (e.type == SDL_KEYDOWN) {
       for (auto &gameObj : gameObjs) {
-        auto &s = *gameObj;
-        auto it = std::find(keymaps[s.GetId()].begin(), keymaps[s.GetId()].end(), e.key.keysym.sym);
-        if (it == keymaps[s.GetId()].end()) { continue; }
+        auto &gObj = gameObj.get();
+        auto it = std::find(keymaps[gObj.GetId()].begin(), keymaps[gObj.GetId()].end(), e.key.keysym.sym);
+        if (it == keymaps[gObj.GetId()].end()) { continue; }
 
         switch (e.key.keysym.sym) {
           case SDLK_UP:
           case SDLK_w:
           case SDLK_KP_8:
-            gameObj->SetDirection(Direction::kUp, Direction::kDown);
+            gObj.SetDirection(Direction::kUp, Direction::kDown);
             break;
           case SDLK_DOWN:
           case SDLK_s:
           case SDLK_KP_2:
-            gameObj->SetDirection(Direction::kDown, Direction::kUp);
+            gObj.SetDirection(Direction::kDown, Direction::kUp);
             break;
           case SDLK_LEFT:
           case SDLK_a:
           case SDLK_KP_4:
-            gameObj->SetDirection(Direction::kLeft, Direction::kRight);
+            gObj.SetDirection(Direction::kLeft, Direction::kRight);
             break;
           case SDLK_RIGHT:
           case SDLK_d:
           case SDLK_KP_6:
-            gameObj->SetDirection(Direction::kRight, Direction::kLeft);
+            gObj.SetDirection(Direction::kRight, Direction::kLeft);
             break;
           default:
             break;

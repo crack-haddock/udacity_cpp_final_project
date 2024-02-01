@@ -1,7 +1,6 @@
 #include <cmath>
 #include <iostream>
 #include "snake.h"
-#include "gameObject.h"
 
 int Snake::count = 0;
 

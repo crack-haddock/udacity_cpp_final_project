@@ -23,7 +23,9 @@ class Game {
   Controller controller;
   Renderer renderer;
 
-  std::vector<std::shared_ptr<GameObject>> gameObjs;
+  std::vector<std::unique_ptr<GameObject>> gameObjs;
+  // used for calls to controller which takes whole array of game objects
+  std::vector<std::reference_wrapper<GameObject>> gameObjRefs;
   SDL_Point food;
 
   std::random_device rndDev;

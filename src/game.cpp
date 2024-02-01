@@ -1,7 +1,6 @@
 #include <iostream>
 #include <sstream>
 #include "game.h"
-#include "SDL.h"
 
 Game::Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, int players=1) : 
   controller(std::move(controller)),
@@ -22,6 +21,11 @@ Game::Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, in
     );
   }
 
+  // could potentially have merged this into above, but would need revision if we had non-snake player objects as intended
+  for (auto& objPtr : gameObjs) {
+    gameObjRefs.push_back(*objPtr);
+  }
+
   PlaceFood();
 }
 
@@ -38,17 +42,17 @@ void Game::Run() {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, gameObjs);
+    controller.HandleInput(running, gameObjRefs);
 
     for (const auto& obj : gameObjs) {
-      if (auto snake = std::dynamic_pointer_cast<Snake>(obj))
+      if (auto snake = dynamic_cast<Snake*>(obj.get()))
         Update(*snake);
     }
 
     renderer.RenderStart();
 
     for (const auto& obj : gameObjs) {
-      if (auto snake = std::dynamic_pointer_cast<Snake>(obj))
+      if (auto snake = dynamic_cast<Snake*>(obj.get()))
         renderer.Render(*snake, food);
     }
 
@@ -119,8 +123,8 @@ void Game::PlaceFood() {
     
     // Check that the location is not occupied by a snake item before placing food.
     for (auto &g : gameObjs) {
-      if (auto s = std::dynamic_pointer_cast<Snake>(g)) {
-        if (!s.get()->SnakeCell(x, y)) {
+      if (auto s = dynamic_cast<Snake*>(g.get())) {
+        if (!s->SnakeCell(x, y)) {
           food.x = x;
           food.y = y;
 
@@ -154,8 +158,8 @@ void Game::Update(Snake &snake) {
 int Game::GetScore(int idx) const { return gameObjs[idx]->GetScore(); }
 
 int Game::GetSize(int idx) const { 
-  if (auto snake = std::dynamic_pointer_cast<Snake>(gameObjs[idx]))
-    return snake->size;
+  if (auto snake = dynamic_cast<Snake*>(gameObjs[idx].get()))
+    return snake->GetSize();
 
   return 0;
 }
