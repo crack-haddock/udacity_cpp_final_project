@@ -7,7 +7,7 @@ std::map<int, std::vector<SDL_KeyCode>> Controller::keymaps = {
     {3, { SDL_KeyCode::SDLK_KP_8, SDL_KeyCode::SDLK_KP_2, SDL_KeyCode::SDLK_KP_4, SDL_KeyCode::SDLK_KP_6 } }
 };
 
-void Controller::HandleInput(bool &running, const std::vector<std::reference_wrapper<GameObject>> &gameObjs) const {
+void Controller::HandleInput(bool &running, const std::vector<std::reference_wrapper<GameObject>> &gameObjs) {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) {

@@ -1,6 +1,6 @@
 # Overview
 This is a game of Snake for 1, 2 or 3 players. I extended the core game provided in the final project skeleton repo.
-There are a few things not implemented from the point of view of a Snake game, most notably collision detection between snakes and an AI player. I also wanted food to be a playable object in multiplayer. Did not have time for these and some other stuff, but as the point of this exercise is to satisfy the rubrics below, I've concentrated on those.
+There are a few things not implemented from the point of view of a Snake game, most notably collision detection between snakes, and an AI player. I also wanted food to be a playable object in multiplayer. I did not have time for these, but as the point of this exercise is to satisfy the rubrics below, I've concentrated on those.
 
 ## Installation
 Unchanged from Udacity skeleton. Please see readme.md
@@ -8,9 +8,11 @@ Unchanged from Udacity skeleton. Please see readme.md
 ## Problems Outstanding
 Getting TTF fonts working with this game was really tough. Got it working eventually in my Windows/WSL dev env, but not in workspace.
 There are raw pointers in Renderer for the imported SDL and TTF classes. I've tried and failed wrapping TTF_Font in a smart pointer. I found a github repo that is able to do so for the SDL classes, but it looks complicated and I have little time for confidence for trying to adapt it to mine.
+Must cite the following as the source of the extra cmake file I needed:
+https://github.com/aminosbh/sdl2-ttf-sample/blob/master/cmake/sdl2/FindSDL2_ttf.cmake
 
 ## Features
-- 1, 2 or 3 player [TODO user prompted for number on startup]
+- 1, 2 or 3 player [user prompted for number on startup]
 - Reads in fps and screen/grid dimensions from text file allowing user to set game params without recompiling
 
 ## Rubric Points Addressed
@@ -22,23 +24,34 @@ There are raw pointers in Renderer for the imported SDL and TTF classes. I've tr
     - [4/2] Loops, functions, I/O
         - [done] The project demonstrates an understanding of C++ functions and control structures
         - [done] Reads data from a file
+            - config.cpp
         - [done] The project accepts user input and processes the input [other than controlling a snake]
-            - press a key to exist on Game Over
+            - press a key to 1) choose number of players 2) exit on Game Over
         - [done] data structures and immutable variables
+            - keymaps in controller class, const used in several places
     - [3/3] OOP
         - [done] One or more classes are added to the project
+            - Config, GameObject, Food
         - [done] Class constructors utilize member initialization lists.
-        - [] Classes abstract implementation details from their interfaces
+            - Renderer, Game, Snake
+        - [maybe?] Classes abstract implementation details from their interfaces
         - [NO] Overloaded functions allow the same function to operate on different parameters.
         - [done] Classes follow an appropriate inheritance hierarchy with virtual and override functions
-        - [] Templates generalize functions or classes in the project.
+            - see GameObject and child object Snake (also Food, but not this wasn't used in the end)
+        - [NO] Templates generalize functions or classes in the project.
     - [4/3] Memory Management
         - [DONE] uses move semantics
+            - creates Renderer object in main(), moves ownership to Game object
+                - bonus points for dependency injection? :)
         - [PARTLY DONE] uses smart pointers [TO DO - remove all raw pointers where possible]
+            - unique_ptr used for vector of snakes in game.h.
+            - gave up trying to wrap SDL-related stuff in smart pointers
         - [DONE] The project follows the Rule of 5.
+            - Renderer
         - [DONE] The project makes use of references in function declarations.
         - [DONE] makes use of references in function declarations
-        - [] uses destructors appropriately
+        - [MAYBE] uses destructors appropriately
+            - the only place I found a need for destructors was Render where I think it was already written 
     - [0/2] Concurrency
         - [NO] The project uses multithreading
         - [NO] A promise and future is used in the project

@@ -10,7 +10,7 @@
 
 class Controller {
  public:
-    void HandleInput(bool &running, const std::vector<std::reference_wrapper<GameObject>> &gameObjs) const;
+    static void HandleInput(bool &running, const std::vector<std::reference_wrapper<GameObject>> &gameObjs);
 
  private:
     static std::map<int, std::vector<SDL_KeyCode>> keymaps;

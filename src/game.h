@@ -4,16 +4,15 @@
 #include <random>
 #include <memory>
 #include <vector>
-#include "SDL.h"
-#include "controller.h"
+#include "SDL.h" // can move to .cpp once Food class replaces SDL_Point
 #include "renderer.h"
-#include "snake.h"
+#include "gameObject.h"
 
 constexpr int MAX_PLAYERS{3};
 
 class Game {
  public:
-  Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg);
+  Game(Renderer&& renderer, ConfigSettings& cfg);
   void PlayerSetup();
   void Run();
   void GameEnded();
@@ -21,7 +20,6 @@ class Game {
   int GetSize(int idx) const;
 
  private:
-  Controller controller;
   Renderer renderer;
 
   std::vector<std::unique_ptr<GameObject>> gameObjs;

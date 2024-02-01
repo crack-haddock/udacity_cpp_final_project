@@ -1,9 +1,9 @@
 #include <iostream>
 #include <sstream>
 #include "game.h"
+#include "controller.h"
 
-Game::Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg) : 
-  controller(std::move(controller)),
+Game::Game(Renderer&& renderer, ConfigSettings& cfg) : 
   renderer(std::move(renderer)),
   desiredFPS(cfg.kDesiredFPS),
   targetMSPerFrame(cfg.kMsPerFrame),
@@ -73,7 +73,7 @@ void Game::Run() {
     frame_start = SDL_GetTicks();
 
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, gameObjRefs);
+    Controller::HandleInput(running, gameObjRefs);
 
     for (const auto& obj : gameObjs) {
       if (auto snake = dynamic_cast<Snake*>(obj.get()))
