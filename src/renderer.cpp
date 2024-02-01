@@ -108,7 +108,7 @@ void Renderer::Render(const Snake& snake, const SDL_Point &food) {
   SDL_RenderFillRect(sdl_renderer, &block);
 }
 
-void Renderer::RenderGameOver(std::string text) {
+void Renderer::RenderText(const std::string &text) const {
     TTF_Font *font = font_30;
     SDL_Color textColor = { 255, 0, 0, 255 };
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), textColor);

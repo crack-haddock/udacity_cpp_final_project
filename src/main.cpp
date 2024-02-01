@@ -10,9 +10,8 @@ int main() {
     Controller controller;
     Renderer renderer(settings);
 
-    // TODO - ask user for 1/2/3 player game. Here or in game obj?
-
-    Game game(std::move(controller), std::move(renderer), settings, 3);
+    Game game(std::move(controller), std::move(renderer), settings);
+    game.PlayerSetup();
     game.Run();
     game.GameEnded();
 

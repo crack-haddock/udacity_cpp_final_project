@@ -13,7 +13,8 @@ constexpr int MAX_PLAYERS{3};
 
 class Game {
  public:
-  Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, int players);
+  Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg);
+  void PlayerSetup();
   void Run();
   void GameEnded();
   int GetScore(int idx) const;
@@ -37,6 +38,7 @@ class Game {
   int numPlayers{MAX_PLAYERS};
   size_t desiredFPS;
   size_t targetMSPerFrame;
+  int gridSizeX, gridSizeY;
   int scores[MAX_PLAYERS];
   int winner{-1};
 

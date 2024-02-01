@@ -2,21 +2,52 @@
 #include <sstream>
 #include "game.h"
 
-Game::Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, int players=1) : 
+Game::Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg) : 
   controller(std::move(controller)),
   renderer(std::move(renderer)),
-  numPlayers(players),
   desiredFPS(cfg.kDesiredFPS),
   targetMSPerFrame(cfg.kMsPerFrame),
+  gridSizeX{static_cast<int>(cfg.kGridWidth)},
+  gridSizeY{static_cast<int>(cfg.kGridHeight)},
   rndEngn(rndDev()),
   rand_w(0, static_cast<int>(cfg.kGridWidth - 1)),
   rand_h(0, static_cast<int>(cfg.kGridHeight - 1)),
   rand_dir(1, 4),
   scores{0, 0, 0}
-{
+  {}
+
+void Game::PlayerSetup() {
+  renderer.RenderText("How Many Players? 1/2/3");
+
+  SDL_Event event;
+  bool quit = false;
+  while (!quit) {
+      while (SDL_PollEvent(&event)) {
+          if (event.type == SDL_KEYDOWN) {
+              switch (event.key.keysym.sym) {
+                case SDLK_1:
+                case SDLK_KP_1:
+                  numPlayers = 1;
+                  quit = true;
+                break;
+                case SDLK_2:
+                case SDLK_KP_2:
+                  numPlayers = 2;
+                  quit = true;
+                break;
+                case SDLK_3:
+                case SDLK_KP_3:
+                  numPlayers = 3;
+                  quit = true;
+                break;
+              }
+          }
+      }
+  }
+
   for(size_t i = 0; i < numPlayers; i++) {
     gameObjs.emplace_back(std::make_unique<Snake>
-      (cfg.kGridWidth, cfg.kGridHeight, rand_w(rndEngn), rand_h(rndEngn), 
+      (gridSizeX, gridSizeY, rand_w(rndEngn), rand_h(rndEngn), 
         static_cast<Direction>(rand_dir(rndEngn)) )
     );
   }
@@ -25,8 +56,6 @@ Game::Game(Controller&& controller, Renderer&& renderer, ConfigSettings& cfg, in
   for (auto& objPtr : gameObjs) {
     gameObjRefs.push_back(*objPtr);
   }
-
-  PlaceFood();
 }
 
 void Game::Run() {
@@ -37,6 +66,8 @@ void Game::Run() {
   int frame_count = 0;
   bool running = true;
   bool won = false;
+
+  PlaceFood();
 
   while (running && !won) {
     frame_start = SDL_GetTicks();
@@ -93,10 +124,10 @@ void Game::GameEnded() {
   if (winner != -1) {
     std::stringstream ss;
     ss << "PLAYER " << (winner + 1) << " WINS!";
-    renderer.RenderGameOver(ss.str().c_str());
+    renderer.RenderText(ss.str().c_str());
   }
   else
-    renderer.RenderGameOver("GAME OVER!!");
+    renderer.RenderText("GAME OVER!!");
 
   SDL_Event event;
   bool quit = false;

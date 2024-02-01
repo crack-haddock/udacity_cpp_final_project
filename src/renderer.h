@@ -83,7 +83,7 @@ class Renderer {
   void Render(const Snake& snake, const SDL_Point &food);
   void RenderEnd();
 
-  void RenderGameOver(std::string text);
+  void RenderText(const std::string &text) const;
 
   void UpdateWindowTitle(int const scores[], int numPlayers, int fps) const;
 
