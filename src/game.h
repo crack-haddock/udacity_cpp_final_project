@@ -4,6 +4,7 @@
 #include <random>
 #include <memory>
 #include <vector>
+#include <mutex>
 #include "SDL.h" // can move to .cpp once Food class replaces SDL_Point
 #include "renderer.h"
 #include "gameObject.h"
@@ -23,7 +24,7 @@ class Game {
   Renderer renderer;
 
   std::vector<std::unique_ptr<GameObject>> gameObjs;
-  // used for calls to controller which takes whole array of game objects
+  // used for calls to controller which takes whole array of game object references
   std::vector<std::reference_wrapper<GameObject>> gameObjRefs;
   SDL_Point food;
 
@@ -37,12 +38,16 @@ class Game {
   size_t desiredFPS;
   size_t targetMSPerFrame;
   int gridSizeX, gridSizeY;
+  int winningMultiplayerScore{10};
   int scores[MAX_PLAYERS];
   int winner{-1};
 
   // TODO need to stay working much as they are until Food class can be used
   void PlaceFood();
   void Update(Snake &snake);
+
+  std::mutex _mtxFPS;
+  std::mutex _mtxRunning;
 };
 
 #endif

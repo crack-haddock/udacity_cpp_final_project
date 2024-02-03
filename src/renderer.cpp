@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <thread>
 
 Renderer::Renderer(const ConfigSettings& cfg) :
   screen_width(cfg.kScreenWidth),
@@ -125,14 +126,23 @@ void Renderer::RenderText(const std::string &text) const {
     SDL_RenderPresent(sdl_renderer); // Update the screen to make text visible.
 }
 
-void Renderer::UpdateWindowTitle(int const scores[], int numPlayers, int fps) const {
+void Renderer::UpdateWindowTitle(int const scores[], int numPlayers, const int& fps, const bool& running, std::mutex& fpsMutex) const {
   std::stringstream ss;
+  std::unique_lock<std::mutex> lockFPS(fpsMutex, std::defer_lock);
 
-  for (int i=0; i < numPlayers; i++) {
-    ss << "PL" << i+1 << ": " << scores[i] << "  ";
+  while(running) {
+    for (int i=0; i < numPlayers; i++) {
+      ss << "PL" << i+1 << ": " << scores[i] << "  ";
+    }
+
+    lockFPS.lock();
+    ss << "FPS: " << std::to_string(fps);
+    lockFPS.unlock();
+
+    SDL_SetWindowTitle(sdl_window, ss.str().c_str());
+
+    ss.str("");
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
   }
-
-  ss << "FPS: " << std::to_string(fps);
-
-  SDL_SetWindowTitle(sdl_window, ss.str().c_str());
 }

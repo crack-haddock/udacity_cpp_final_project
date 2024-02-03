@@ -1,3 +1,4 @@
+#include <fstream>
 #include "config.h"
 
 // NOTE: ideally the limits in this class would be more dynamic and relative too each other to avoid unplayable combinations, but it's just to show basic user config setting
@@ -8,10 +9,14 @@ ConfigSettings ConfigParser:: ConfigParse(std::string filepath) {
     char sep;
 
     if (myfile.is_open()) {
+        int kWinningMultiplayerScore;
         std::size_t kFramesPerSecond, kScreenWidth, kScreenHeight, kGridWidth, kGridHeight;
 
-        myfile >> kFramesPerSecond >> sep >> kScreenWidth >> sep >> kScreenHeight >> sep >> kGridWidth >> sep >> kGridHeight;
-        //std::cout << kFramesPerSecond << kScreenWidth << kScreenHeight << kGridWidth << kGridHeight;
+        myfile >> kWinningMultiplayerScore >> sep >> kFramesPerSecond >> sep >> kScreenWidth >> sep >> 
+            kScreenHeight >> sep >> kGridWidth >> sep >> kGridHeight;
+
+        if (kWinningMultiplayerScore <= 0)
+            throw std::invalid_argument("Score must be a positive number");
 
         if (kFramesPerSecond < 15 || kFramesPerSecond > 120)
             throw std::invalid_argument("Desired frame rate out of range");
@@ -28,7 +33,7 @@ ConfigSettings ConfigParser:: ConfigParse(std::string filepath) {
         if (kScreenHeight < 160 || kScreenHeight > 1024)
             throw std::invalid_argument("Desired screen height out of range (160-1024)");
 
-        ConfigSettings cs(kFramesPerSecond, kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
+        ConfigSettings cs(kWinningMultiplayerScore, kFramesPerSecond, kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
 
         return std::move(cs);
     }

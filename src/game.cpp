@@ -1,10 +1,13 @@
 #include <iostream>
 #include <sstream>
+#include <thread>
+#include <mutex>
 #include "game.h"
 #include "controller.h"
 
 Game::Game(Renderer&& renderer, ConfigSettings& cfg) : 
   renderer(std::move(renderer)),
+  winningMultiplayerScore(cfg.kWinningMultiplayerScore),
   desiredFPS(cfg.kDesiredFPS),
   targetMSPerFrame(cfg.kMsPerFrame),
   gridSizeX{static_cast<int>(cfg.kGridWidth)},
@@ -56,6 +59,15 @@ void Game::PlayerSetup() {
   for (auto& objPtr : gameObjs) {
     gameObjRefs.push_back(*objPtr);
   }
+
+  if (numPlayers == 1) return;
+
+  renderer.RenderStart();
+  std::this_thread::sleep_for(std::chrono::milliseconds(250));
+  std::stringstream ss;
+  ss << "First to " << winningMultiplayerScore << " wins! Good Luck!";
+  renderer.RenderText(ss.str().c_str());
+  std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 }
 
 void Game::Run() {
@@ -63,11 +75,17 @@ void Game::Run() {
   Uint32 frame_start;
   Uint32 frame_end;
   Uint32 frame_duration;
-  int frame_count = 0;
+  int currentFrameCount = 0;
+  int lastFrameCount = currentFrameCount;
   bool running = true;
   bool won = false;
 
   PlaceFood();
+
+  // made as a thread rather than a task as runs as long as the game itself
+  std::thread t(&Renderer::UpdateWindowTitle, &renderer, scores, numPlayers, std::ref(lastFrameCount), std::ref(running), std::ref(_mtxFPS));
+
+  std::unique_lock<std::mutex> lockFPS(_mtxFPS, std::defer_lock);
 
   while (running && !won) {
     frame_start = SDL_GetTicks();
@@ -76,8 +94,9 @@ void Game::Run() {
     Controller::HandleInput(running, gameObjRefs);
 
     for (const auto& obj : gameObjs) {
-      if (auto snake = dynamic_cast<Snake*>(obj.get()))
+      if (auto snake = dynamic_cast<Snake*>(obj.get())) {
         Update(*snake);
+      }
     }
 
     renderer.RenderStart();
@@ -92,13 +111,15 @@ void Game::Run() {
     frame_end = SDL_GetTicks();
 
     // Keep track of how long each loop through the input/update/render cycle takes.
-    frame_count++;
+    currentFrameCount++;
     frame_duration = frame_end - frame_start;
 
     // After every frame, update the window title.
     if (frame_end - title_timestamp >= 1000) {
-      renderer.UpdateWindowTitle(scores, numPlayers, frame_count);
-      frame_count = 0;
+      lockFPS.lock();
+      lastFrameCount = currentFrameCount;
+      lockFPS.unlock();
+      currentFrameCount = 0;
       title_timestamp = frame_end;
     }
 
@@ -111,13 +132,16 @@ void Game::Run() {
     for(size_t i = 0; i < numPlayers; i++) {
       scores[i] = GetScore(i);
 
-      // make multiplayer first to score 10 (TODO: should be configurable really)
-      if (numPlayers > 1 && scores[i] >= 10) {
+      // make multiplayer first to score 'winningMultiplayerScore'
+      if (numPlayers > 1 && scores[i] >= winningMultiplayerScore) {
         won = true;
+        running = false;
         winner = i;
       }
     }
   }
+
+  t.join();
 }
 
 void Game::GameEnded() {

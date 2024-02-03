@@ -2,6 +2,7 @@
 #define RENDERER_H
 
 #include <utility>
+#include <mutex>
 #include "SDL.h"
 #include "snake.h"
 #include "config.h"
@@ -85,7 +86,7 @@ class Renderer {
 
   void RenderText(const std::string &text) const;
 
-  void UpdateWindowTitle(int const scores[], int numPlayers, int fps) const;
+  void UpdateWindowTitle(int const scores[], int numPlayers, const int& fps, const bool& running, std::mutex& mutexFps) const;
 
  private:
   SDL_Window *sdl_window;
