@@ -56,7 +56,8 @@ Otherwise, installation/building is unchanged from the Udacity skeleton, so plea
     - [DONE] The project follows the Rule of 5.
         - Renderer
     - [DONE] The project makes use of references in function declarations.
-    - [DONE] makes use of references in function declarations
+    - [DONE] The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate.
+        - I think Renderer, created in main, moved into Game, and being destroyed when Game is, is the example here.
     - [MAYBE] uses destructors appropriately
         - the only place I found a need for destructors was Render, where I think it was already written 
 - [2/2] Concurrency
