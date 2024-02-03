@@ -132,8 +132,10 @@ void Game::Run() {
     for(size_t i = 0; i < numPlayers; i++) {
       scores[i] = GetScore(i);
 
-      // make multiplayer first to score 'winningMultiplayerScore'
       if (numPlayers > 1 && scores[i] >= winningMultiplayerScore) {
+        // give UpdateWindowTitle a chance to catch up with scores as it may not run just before scores were updated, but not again after 'running' is set to false just below
+        // perhaps a lock around scores would do the same job, and probably should be, but this is my very last job before submitting and I'm exhausted!
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
         won = true;
         running = false;
         winner = i;

@@ -143,6 +143,6 @@ void Renderer::UpdateWindowTitle(int const scores[], int numPlayers, const int& 
 
     ss.str("");
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(250));
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
   }
 }
