@@ -19,7 +19,7 @@ There are a few things not implemented from the point of view of a Snake game (o
 
 ## Basic Build Instructions
 
-1. Clone this repo.
+1. Clone this[https://github.com/crack-haddock/udacity_cpp_final_project.git] repo.
 2. Make a build directory in the top level directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
 4. Run it: `./SnakeGame`.
