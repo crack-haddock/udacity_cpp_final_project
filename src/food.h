@@ -6,7 +6,7 @@
 // TODO my intention (but will probably run out of time) is to
 // a) replace the very hazy references to food with a proper encapsulated class
 // b) have food as a playable character
-class Food : GameObject {
+class Food : public GameObject {
 public:
     Food() : GameObject(++Food::count) {}
 
