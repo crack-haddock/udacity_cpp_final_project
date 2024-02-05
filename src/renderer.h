@@ -5,6 +5,7 @@
 #include <mutex>
 #include "SDL.h"
 #include "snake.h"
+#include "food.h"
 #include "config.h"
 #include "SDL_ttf.h"
 
@@ -81,7 +82,8 @@ class Renderer {
   }
 
   void RenderStart();
-  void Render(const Snake& snake, const SDL_Point &food);
+  void Render(const Food &food);
+  void Render(const Snake& snake);
   void RenderEnd();
 
   void RenderText(const std::string &text) const;

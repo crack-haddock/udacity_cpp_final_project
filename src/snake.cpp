@@ -6,13 +6,12 @@ int Snake::count = 0;
 
 void Snake::Update() {
   SDL_Point prev_cell{
-      static_cast<int>(head_x),
-      static_cast<int>(
-          head_y)};  // We first capture the head's cell before updating.
+      static_cast<int>(x),
+      static_cast<int>(y)};  // We first capture the head's cell before updating.
   UpdateHead();
   SDL_Point current_cell{
-      static_cast<int>(head_x),
-      static_cast<int>(head_y)};  // Capture the head's cell after updating.
+      static_cast<int>(x),
+      static_cast<int>(y)};  // Capture the head's cell after updating.
 
   // Update all of the body vector items if the snake head has moved to a new cell.
   if (current_cell.x != prev_cell.x || current_cell.y != prev_cell.y) {
@@ -23,25 +22,25 @@ void Snake::Update() {
 void Snake::UpdateHead() {
   switch (direction) {
     case Direction::kUp:
-      head_y -= speed;
+      y -= speed;
       break;
 
     case Direction::kDown:
-      head_y += speed;
+      y += speed;
       break;
 
     case Direction::kLeft:
-      head_x -= speed;
+      x -= speed;
       break;
 
     case Direction::kRight:
-      head_x += speed;
+      x += speed;
       break;
   }
 
   // Wrap the Snake around to the beginning if going off of the screen.
-  head_x = fmod(head_x + grid_width, grid_width);
-  head_y = fmod(head_y + grid_height, grid_height);
+  x = fmod(x + grid_width, grid_width);
+  y = fmod(y + grid_height, grid_height);
 }
 
 void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) {
@@ -67,15 +66,17 @@ void Snake::UpdateBody(SDL_Point &current_head_cell, SDL_Point &prev_head_cell) 
 void Snake::GrowBody() { growing = true; }
 
 // Inefficient method to check if cell is occupied by snake.
-bool Snake::SnakeCell(int x, int y) {
-  if (x == static_cast<int>(head_x) && y == static_cast<int>(head_y)) {
+bool Snake::SnakeCell(int _x, int _y) {
+  if (_x == static_cast<int>(x) && _y == static_cast<int>(y)) {
     return true;
   }
+
   for (auto const &item : body) {
     if (x == item.x && y == item.y) {
       return true;
     }
   }
+  
   return false;
 }
 

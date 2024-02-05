@@ -26,7 +26,7 @@ class Game {
   std::vector<std::unique_ptr<GameObject>> gameObjs;
   // used for calls to controller which takes whole array of game object references
   std::vector<std::reference_wrapper<GameObject>> gameObjRefs;
-  SDL_Point food;
+  Food food;
 
   std::random_device rndDev;
   std::mt19937 rndEngn;

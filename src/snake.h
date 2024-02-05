@@ -7,12 +7,10 @@
 
 class Snake : public GameObject {
  public:
-  Snake(int grid_width, int grid_height, int x, int y, Direction dir)
-      : GameObject(++Snake::count, dir),
+  Snake(int grid_width, int grid_height, int _x, int _y, Direction dir)
+      : GameObject(++Snake::count, _x, _y, dir),
         grid_width(grid_width),
-        grid_height(grid_height),
-        head_x(x),
-        head_y(y)
+        grid_height(grid_height)
       {}
 
   ~Snake() {}
@@ -26,8 +24,8 @@ class Snake : public GameObject {
 
   float speed{0.1f};
   bool alive{true};
-  float head_x;
-  float head_y;
+  //float head_x;
+  //float head_y;
   std::vector<SDL_Point> body;
 
  private:

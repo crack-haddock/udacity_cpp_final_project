@@ -80,7 +80,7 @@ Developed using VS Code on WSL2 (Windows Sub-system for Linux (Ubuntu 22.04)) on
         - I think Renderer, created in main, moved into Game, and being destroyed when Game is, is the example here.
     - [MAYBE] uses destructors appropriately
         - the only place I found a need for destructors was Render, where I think it was already written 
-- [2/2] Concurrency
+- [2/4] Concurrency
     - [DONE] The project uses multithreading
         - Renderer::UpdateWindowTitle() runs in a thread that persists as long as the main game loop
     - [NO] A promise and future is used in the project

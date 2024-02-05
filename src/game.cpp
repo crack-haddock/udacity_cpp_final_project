@@ -103,8 +103,9 @@ void Game::Run() {
 
     for (const auto& obj : gameObjs) {
       if (auto snake = dynamic_cast<Snake*>(obj.get()))
-        renderer.Render(*snake, food);
+        renderer.Render(*snake);
     }
+    renderer.Render(food);
 
     renderer.RenderEnd();
 
@@ -173,6 +174,7 @@ void Game::GameEnded() {
 
 void Game::PlaceFood() {
   int x, y;
+  bool overlap = false;
 
   while (true) {
     x = rand_w(rndEngn);
@@ -181,13 +183,18 @@ void Game::PlaceFood() {
     // Check that the location is not occupied by a snake item before placing food.
     for (auto &g : gameObjs) {
       if (auto s = dynamic_cast<Snake*>(g.get())) {
-        if (!s->SnakeCell(x, y)) {
-          food.x = x;
-          food.y = y;
-
-          return;
+        if (s->SnakeCell(x, y)) {
+          overlap = true;
+          break;
         }
       }
+    }
+
+    if (!overlap) {
+      food.SetX(x);
+      food.SetY(y);
+
+      return;
     }
   }
 }
@@ -197,11 +204,11 @@ void Game::Update(Snake &snake) {
 
   snake.Update();
 
-  int new_x = static_cast<int>(snake.head_x);
-  int new_y = static_cast<int>(snake.head_y);
+  int new_x = static_cast<int>(snake.GetX());
+  int new_y = static_cast<int>(snake.GetY());
 
   // Check if there's food over here
-  if (food.x == new_x && food.y == new_y) {
+  if (food.GetX() == new_x && food.GetY() == new_y) {
     snake.AddOrSubScore(1);
 
     PlaceFood();
