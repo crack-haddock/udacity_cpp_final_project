@@ -5,7 +5,6 @@
 #include <memory>
 #include <vector>
 #include <mutex>
-#include "SDL.h" // can move to .cpp once Food class replaces SDL_Point
 #include "renderer.h"
 #include "gameObject.h"
 

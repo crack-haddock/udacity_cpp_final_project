@@ -6,7 +6,6 @@
 #include <memory>
 #include "SDL.h"
 #include "gameObject.h"
-#include "direction.h"
 
 class Controller {
  public:

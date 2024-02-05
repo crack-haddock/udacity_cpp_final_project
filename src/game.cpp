@@ -4,6 +4,7 @@
 #include <mutex>
 #include "game.h"
 #include "controller.h"
+#include "SDL.h"
 
 Game::Game(Renderer&& renderer, ConfigSettings& cfg) : 
   renderer(std::move(renderer)),
@@ -211,11 +212,11 @@ void Game::Update(Snake &snake) {
   if (food.GetX() == new_x && food.GetY() == new_y) {
     snake.AddOrSubScore(1);
 
-    PlaceFood();
-
     // Grow snake and increase speed.
     snake.GrowBody();
     snake.speed += 0.02;
+
+    PlaceFood();
   }
 }
 
